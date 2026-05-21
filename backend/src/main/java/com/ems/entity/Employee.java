@@ -3,6 +3,12 @@ package com.ems.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+/**
+ * Represents an Employee entity in the system.
+ *
+ * This entity is mapped to the "employees" table in the database
+ * and stores core employee information
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -11,6 +17,7 @@ import lombok.*;
 @Entity
 @Table(name = "employees")
 public class Employee {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

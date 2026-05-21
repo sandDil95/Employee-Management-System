@@ -8,10 +8,13 @@ import com.ems.mapper.EmployeeMapper;
 import com.ems.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.stream.Collectors;
 
+/**
+ * Implementation of EmployeeService.
+ *
+ * Contains all business logic related to Employee management
+ */
 @Service
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {

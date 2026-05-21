@@ -7,7 +7,12 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-
+/**
+ * Data Transfer Object for Employee.
+ *
+ * Used to transfer employee data between client and server
+ * without exposing database entity structure.
+ */
 @Getter
 @Setter
 @Data

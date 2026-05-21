@@ -5,6 +5,11 @@ import com.ems.entity.Employee;
 
 import java.util.List;
 
+/**
+ * Service interface for Employee business operations.
+ *
+ * Defines all core business logic operations for Employee management
+ */
 public interface EmployeeService {
 
     public EmployeeDTO saveEmployee(EmployeeDTO employeeDTO);

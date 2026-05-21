@@ -2,6 +2,10 @@ package com.ems.exception;
 
 import org.springframework.http.HttpStatus;
 
+/**
+ * Exception thrown when attempting to create an employee
+ * with an email that already exists.
+ */
 public class DuplicateEmailException extends BaseException {
 
     public DuplicateEmailException(String email) {

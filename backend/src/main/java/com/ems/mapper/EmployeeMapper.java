@@ -4,9 +4,14 @@ import com.ems.dto.EmployeeDTO;
 import com.ems.entity.Employee;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
-
 import java.util.List;
 
+/**
+ * Mapper interface for converting between Employee entity and DTO.
+ *
+ * Uses MapStruct to automatically generate implementation
+ * at compile time
+ */
 @Mapper(componentModel = "spring")
 public interface EmployeeMapper {
 
