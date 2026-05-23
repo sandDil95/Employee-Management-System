@@ -1,7 +1,8 @@
 package com.ems.service;
 
 import com.ems.dto.EmployeeDTO;
-import com.ems.entity.Employee;
+import com.ems.dto.PagedResponse;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
 public interface EmployeeService {
 
     public EmployeeDTO saveEmployee(EmployeeDTO employeeDTO);
-    public List<EmployeeDTO> getAllEmployees();
+    PagedResponse<EmployeeDTO> getAllEmployees(String keyword, String department, int page, int size, String sortBy, String direction);
     public EmployeeDTO getEmployeeById(Long id);
     public EmployeeDTO updateEmployee(Long id, EmployeeDTO employeeDTO);
     public void deleteEmployee(Long id);

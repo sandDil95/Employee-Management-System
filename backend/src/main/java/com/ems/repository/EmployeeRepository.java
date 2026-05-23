@@ -2,13 +2,14 @@ package com.ems.repository;
 
 import com.ems.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 /**
  * Repository layer for Employee entity.
  *
  * Handles database operations for Employee
  */
-public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+public interface EmployeeRepository extends JpaRepository<Employee, Long>, JpaSpecificationExecutor<Employee> {
 
     /**
      * Checks whether an employee exists with the given email.

@@ -1,11 +1,16 @@
 package com.ems.controller;
 
+import com.ems.dto.ApiResponse;
 import com.ems.dto.EmployeeDTO;
+import com.ems.dto.PagedResponse;
 import com.ems.entity.Employee;
 import com.ems.repository.EmployeeRepository;
 import com.ems.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,8 +39,8 @@ public class EmployeeController {
      * @return created EmployeeDTO
      */
     @PostMapping
-    public EmployeeDTO createEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
-        return employeeService.saveEmployee(employeeDTO);
+    public ResponseEntity<EmployeeDTO> createEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
+        return ResponseEntity.ok(employeeService.saveEmployee(employeeDTO));
     }
 
     /**
@@ -44,8 +49,17 @@ public class EmployeeController {
      * @return
      */
     @GetMapping
-    public List<EmployeeDTO> getAllEmployees() {
-        return employeeService.getAllEmployees();
+    public ResponseEntity<ApiResponse<PagedResponse<EmployeeDTO>>> getAllEmployees(
+            @RequestParam(required=false) String keyword,
+            @RequestParam(required=false) String department,
+            @RequestParam(defaultValue="0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction) {
+
+        PagedResponse<EmployeeDTO> data = employeeService.getAllEmployees(keyword, department, page, size, sortBy, direction);
+        ApiResponse<PagedResponse<EmployeeDTO>> apiResponse = new ApiResponse<>(true, "Employees fetched succesfully", data);
+        return ResponseEntity.ok(apiResponse);
     }
 
     /**
@@ -55,8 +69,8 @@ public class EmployeeController {
      * @return EmployeeDTO
      */
     @GetMapping("/{id}")
-    public EmployeeDTO getEmployeeById(@PathVariable Long id) {
-        return employeeService.getEmployeeById(id);
+    public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable Long id) {
+        return ResponseEntity.ok(employeeService.getEmployeeById(id));
     }
 
     /**
@@ -67,8 +81,8 @@ public class EmployeeController {
      * @return updated EmployeeDTO
      */
     @PutMapping("/{id}")
-    public EmployeeDTO updateEmployee( @PathVariable Long id, @RequestBody EmployeeDTO employeeDTO) {
-        return employeeService.updateEmployee(id, employeeDTO);
+    public ResponseEntity<EmployeeDTO> updateEmployee( @PathVariable Long id, @RequestBody EmployeeDTO employeeDTO) {
+        return ResponseEntity.ok(employeeService.updateEmployee(id, employeeDTO));
     }
 
     /**
@@ -78,8 +92,8 @@ public class EmployeeController {
      * @return success message
      */
     @DeleteMapping("/{id}")
-    public String deleteEmployee(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
         employeeService.deleteEmployee(id);
-        return "Employee deleted successfully";
+        return ResponseEntity.noContent().build();
     }
 }
