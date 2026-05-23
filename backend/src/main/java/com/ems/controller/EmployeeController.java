@@ -3,13 +3,12 @@ package com.ems.controller;
 import com.ems.dto.ApiResponse;
 import com.ems.dto.EmployeeDTO;
 import com.ems.dto.PagedResponse;
-import com.ems.entity.Employee;
-import com.ems.repository.EmployeeRepository;
 import com.ems.service.EmployeeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
-import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +26,8 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Validated
-@RequestMapping("/employees")
+@RequestMapping("/api/v1/employees")
+@Tag(name = "Employee Controller", description = "Employee Management APIs")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
@@ -39,8 +39,11 @@ public class EmployeeController {
      * @return created EmployeeDTO
      */
     @PostMapping
-    public ResponseEntity<EmployeeDTO> createEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
-        return ResponseEntity.ok(employeeService.saveEmployee(employeeDTO));
+    @Operation(summary = "Create Employee")
+    public ResponseEntity<ApiResponse<EmployeeDTO>> createEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
+        EmployeeDTO createdEmployee = employeeService.saveEmployee(employeeDTO);
+        ApiResponse<EmployeeDTO> response = new ApiResponse<>(true, "Employee created successfully", createdEmployee);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     /**
@@ -49,6 +52,7 @@ public class EmployeeController {
      * @return
      */
     @GetMapping
+    @Operation(summary = "Get all employees with pagination, sorting and filtering")
     public ResponseEntity<ApiResponse<PagedResponse<EmployeeDTO>>> getAllEmployees(
             @RequestParam(required=false) String keyword,
             @RequestParam(required=false) String department,
@@ -58,7 +62,7 @@ public class EmployeeController {
             @RequestParam(defaultValue = "asc") String direction) {
 
         PagedResponse<EmployeeDTO> data = employeeService.getAllEmployees(keyword, department, page, size, sortBy, direction);
-        ApiResponse<PagedResponse<EmployeeDTO>> apiResponse = new ApiResponse<>(true, "Employees fetched succesfully", data);
+        ApiResponse<PagedResponse<EmployeeDTO>> apiResponse = new ApiResponse<>(true, "Employees fetched successfully", data);
         return ResponseEntity.ok(apiResponse);
     }
 
@@ -69,8 +73,11 @@ public class EmployeeController {
      * @return EmployeeDTO
      */
     @GetMapping("/{id}")
-    public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable Long id) {
-        return ResponseEntity.ok(employeeService.getEmployeeById(id));
+    @Operation(summary = "Get employee by ID")
+    public ResponseEntity<ApiResponse<EmployeeDTO>> getEmployeeById(@PathVariable Long id) {
+        EmployeeDTO employee = employeeService.getEmployeeById(id);
+        ApiResponse response = new ApiResponse(true, "Employee fetched successfully", employee);
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -81,8 +88,11 @@ public class EmployeeController {
      * @return updated EmployeeDTO
      */
     @PutMapping("/{id}")
-    public ResponseEntity<EmployeeDTO> updateEmployee( @PathVariable Long id, @RequestBody EmployeeDTO employeeDTO) {
-        return ResponseEntity.ok(employeeService.updateEmployee(id, employeeDTO));
+    @Operation(summary = "Update employee")
+    public ResponseEntity<ApiResponse<EmployeeDTO>> updateEmployee( @PathVariable Long id, @RequestBody EmployeeDTO employeeDTO) {
+        EmployeeDTO updatedEmployee = employeeService.updateEmployee(id, employeeDTO);
+        ApiResponse<EmployeeDTO> response = new ApiResponse<>(true, "Employee updated successfully", updatedEmployee);
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -92,6 +102,7 @@ public class EmployeeController {
      * @return success message
      */
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete employee")
     public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
         employeeService.deleteEmployee(id);
         return ResponseEntity.noContent().build();
