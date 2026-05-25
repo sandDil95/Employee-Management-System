@@ -14,8 +14,7 @@ import lombok.Setter;
  * Used to transfer employee data between client and server
  * without exposing database entity structure.
  */
-@Getter
-@Setter
+
 @Data
 public class EmployeeDTO {
 
