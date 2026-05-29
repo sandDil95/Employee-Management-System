@@ -3,6 +3,7 @@ import LoginPage from "./pages/auth/LoginPage";
 import Registerpage from "./pages/auth/RegisterPage";
 import EmployeeListPage from "./pages/employee/EmployeeListPage";
 import ProtectedRoute from "./pages/auth/ProtectedRoute";
+import CreateEmployeePage from "./pages/employee/CreateEmployeePage"; 
 
 function App() {
     return (
@@ -12,7 +13,9 @@ function App() {
                 <Route path = "/login" element={ <LoginPage/> } />
                 <Route path = "/register" element={ <Registerpage/> } />
                 <Route path = "/employees" 
-                  element={ <ProtectedRoute><EmployeeListPage/></ProtectedRoute>} />
+                  element = { <ProtectedRoute><EmployeeListPage/></ProtectedRoute>} />
+                <Route path = "/employees/create"
+                  element = { <ProtectedRoute><CreateEmployeePage /></ProtectedRoute>}/>
               </Routes>
         </BrowserRouter>
     );
