@@ -4,6 +4,7 @@ import Registerpage from "./pages/auth/RegisterPage";
 import EmployeeListPage from "./pages/employee/EmployeeListPage";
 import ProtectedRoute from "./pages/auth/ProtectedRoute";
 import CreateEmployeePage from "./pages/employee/CreateEmployeePage"; 
+import EditEmployeepage  from "./pages/employee/EditEmployeePage";
 
 function App() {
     return (
@@ -16,6 +17,8 @@ function App() {
                   element = { <ProtectedRoute><EmployeeListPage/></ProtectedRoute>} />
                 <Route path = "/employees/create"
                   element = { <ProtectedRoute><CreateEmployeePage /></ProtectedRoute>}/>
+                <Route path = "/employees/edit/:id"
+                  element = { <ProtectedRoute><EditEmployeepage /></ProtectedRoute>}/>
               </Routes>
         </BrowserRouter>
     );

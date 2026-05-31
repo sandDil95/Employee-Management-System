@@ -3,6 +3,7 @@ package com.ems.mapper;
 import com.ems.dto.EmployeeDTO;
 import com.ems.entity.Employee;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import java.util.List;
 
@@ -21,5 +22,6 @@ public interface EmployeeMapper {
 
     public List<EmployeeDTO> toDTOList(List<Employee> employees);
 
+    @Mapping(target = "id", ignore = true)
     public void updateEmployeeFromDto(EmployeeDTO dto, @MappingTarget Employee entity);
 }

@@ -1,16 +1,23 @@
 import { useForm, useFormContext } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { createEmployee } from "../../services/employeeService";
 
 export default function CreateEmployeePage() {
     const navigate = useNavigate();
     const { register, handleSubmit, formState: { errors }} = useForm();
 
+    const [searchParams, setSearchParams] = useSearchParams();
+    const page = Number(searchParams.get("page")) || 0;
+    const size = Number(searchParams.get("size")) || 5;
+    const keyword = searchParams.get("keyword") || "";
+
+    const backToListUrl = `/employees?page=${page}&size=${size}&keyword=${keyword}`;
+
     const onSubmit = async (data) => {
         try {
             await createEmployee(data);
             alert("Employee created successfully");
-            navigate("/employees");
+            navigate(backToListUrl);
         } catch (error) {
             alert(error.response?.data?.message || "Failed to create employee");
         }
@@ -47,7 +54,7 @@ export default function CreateEmployeePage() {
                 </div>
 
                 <button type="submit">Create</button>
-                <button type="button" onClick={() => navigate("/employees")}>Cancel</button>
+                <button type="button" onClick={() => navigate(backToListUrl)}>Cancel</button>
             </form>
         </div>
     );   

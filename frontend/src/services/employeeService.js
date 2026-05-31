@@ -13,6 +13,17 @@ export const getEmployees = async ({
     return response.data;
 }
 
+export const getEmployeeById = async (id) => {
+    const response = await axiosInstance.get(`/employees/${id}`);
+    return response.data;
+}
+
+export const updateEmployee = async (id, employee) => {
+  const response = await axiosInstance.put(`/employees/${id}`, employee);
+  return response.data;
+};
+
+
 export const deleteEmployee = async (id) => {
     await axiosInstance.delete(`/employees/${id}`);
 };
