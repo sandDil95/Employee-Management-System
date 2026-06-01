@@ -1,18 +1,16 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getEmployeeById, updateEmployee } from "../../services/employeeService";
+import { useEmployeeSearchParams } from "../../hooks/useEmployeeSearchParams";
 
 export default function EditEmployeepage() {
     const { id } = useParams();
     const navigate = useNavigate();
 
     const { register, handleSubmit, reset, formState: {errors},} = useForm();
-    const [searchParams, setSearchParams] = useSearchParams();
-    const page = Number(searchParams.get("page")) || 0;
-    const size = Number(searchParams.get("size")) || 5;
-    const keyword = searchParams.get("keyword") || "";
+    const { page, size, keyword, sort } = useEmployeeSearchParams();
 
     const backToListUrl = `/employees?page=${page}&size=${size}&keyword=${keyword}`;
     

@@ -3,15 +3,14 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getEmployees, deleteEmployee } from "../../services/employeeService";
 import { useAuth } from "../auth/AuthContext";
+import { useEmployeeSearchParams } from "../../hooks/useEmployeeSearchParams";
+
 
 export default function EmployeeListPage() {
 
     const [employees, setEmployees] = useState([]);
     const [pagination, setPagination] = useState({});
-    const [searchParams, setSearchParams] = useSearchParams();
-    const [page, setPage] = useState(Number(searchParams.get("page")) || 0);
-    const [size, setSize] = useState(Number(searchParams.get("size")) || 5);
-    const [keyword, setKeyword] = useState(Number(searchParams.get("keyword")) || "");
+    const { page, size, keyword, sort, setSearchParams } = useEmployeeSearchParams();
 
     const { logout } = useAuth();
     const navigate = useNavigate();
@@ -39,14 +38,12 @@ export default function EmployeeListPage() {
     };
 
     const handleNext = () => {
-        const nextpage = page + 1;
-        setPage(nextpage);
+        const nextPage = page + 1;
         setSearchParams({ page: nextPage, size, keyword });
     };
 
     const handlePrevious = () => {
         const prevPage = page - 1;
-        setPage(prevPage);
         setSearchParams({ page: prevPage, size, keyword });
     }
 
