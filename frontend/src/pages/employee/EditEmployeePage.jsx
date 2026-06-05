@@ -4,6 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getEmployeeById, updateEmployee } from "../../services/employeeService";
 import { useEmployeeSearchParams } from "../../hooks/useEmployeeSearchParams";
+import { Container, Paper, TextField, Button, Typography, Stack } from "@mui/material";
+import Navbar from "../../components/Navbar";
 
 export default function EditEmployeepage() {
     const { id } = useParams();
@@ -46,24 +48,29 @@ export default function EditEmployeepage() {
     }
 
     return (
-        <div>
-            <h2>Edit Employee</h2>
-            <form onSubmit={ handleSubmit(onSubmit) }>
-                <div>
-                    <input placeholder="First Name" { ...register("firstName", { required: "First name is required", })}
-                    />{ errors.firstName && <p>{ errors.firstName.message }</p> }
-                    <input placeholder="Last Name" { ...register("lastName", { required: "Last name is required", })}
-                    />{ errors.lastName && <p>{ errors.lastName.message }</p> }
-                    <input placeholder="Email" { ...register("email", { required: "Email is required", })}
-                    />{ errors.email && <p>{ errors.email.message }</p> }
-                    <input placeholder="Department" { ...register("department", { required: "Department is required", })}
-                    />{ errors.department && <p>{ errors.department.message }</p> }
-                    <input placeholder="Salary" { ...register("salary", { required: "Salary is required", })}
-                    />{ errors.salary && <p>{ errors.salary.message }</p> }
-                </div>
-                <button type="submit">Update</button>
-                <button type="button" onClick={() => navigate(backToListUrl)}Cancel></button>
-            </form>
-        </div>
+        <>
+            <Navbar />
+            <Container maxWidth="sm">
+                <Paper elevation={3} sx={{p: 4, mt: 5}}>
+                    <Typography variant="h5" mb={3}>Edit Employee</Typography><br/>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <Stack spacing={2}>
+                            <TextField placeholder="First Name" {...register("firstName", {required: "First Name is required"})} />
+                            {errors.firstName && <p>{errors.firstName.message}</p>}
+                            <TextField placeholder="Last Name" {...register("lastName", {required: "Last Name is required"})} />
+                            {errors.lastName && <p>{errors.lastName.message}</p>}
+                            <TextField placeholder="Email" {...register("email", {required: "Email is required"})} />
+                            {errors.lastName && <p>{errors.lastName.message}</p>}
+                            <TextField placeholder="Department" {...register("department", {required: "Department is required"})}/>
+                            {errors.department && <p>{errors.department.message}</p>}
+                            <TextField placeholder="Salary" {...register("salary", {required: "Salary is required"})} />
+                            {errors.salary && <p>{errors.salary.message}</p>}
+                            <Button variant="contained" color="primary"  type="submit">Update</Button>
+                            <Button variant="contained" color="warning"  type="button" onClick={() => navigate(backToListUrl)}>Cancel</Button>
+                        </Stack>
+                    </form>
+                </Paper>
+            </Container>
+        </>
     );
 }

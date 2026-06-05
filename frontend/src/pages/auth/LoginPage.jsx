@@ -2,6 +2,9 @@ import {useForm} from "react-hook-form";
 import {loginRequest} from "../../services/authService";
 import {useAuth} from "../auth/AuthContext";
 import {useNavigate, Link} from "react-router-dom";
+import LoginIcon from "@mui/icons-material/Login";
+import { Box, Button, Container, Paper, TextField, Typography, Stack } from "@mui/material";
+
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -18,14 +21,23 @@ export default function LoginPage() {
         }
     }
     return (
-        <div>
-            <h2>User Signin</h2>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <input placeholder="Email" {...register("email")}/>
-                <input placeholder="Password" {...register("password")}/>
-                <button type="submit">Login</button>
-            </form>
-            <p>Don't have an account? <Link to="/register"> Register </Link></p>
-        </div>
+            <Container maxWidth="xs">
+                <Paper elevation={4} sx={{ mt: 20, p: 4, borderRadius: 3, }}>
+                    <Box sx={{ textAlign: "center", mb: 3 }}>
+                        <Typography variant="m4" fontWeight="bold">EMS Login</Typography>
+                        <Typography variant="body2" color="text.secondary" mt={1}>Sign in to continue</Typography>
+                    </Box><br/>
+                    <Stack spacing={2}>
+                        <TextField label="Email" fullWidth {...register("email", { required: "Email is required",})}/>
+                        <TextField label="Password" fullWidth {...register("password", { required: "Password is required",})}/>
+                        <Button type="submit" variant="contained" size="large" fullWidth startIcon={<LoginIcon />}
+                        onClick={handleSubmit(onSubmit)}>Login</Button>
+                    </Stack>
+                    <Typography variant="body2" sx={{ textAlign: "center", mb: 3 }}>
+                        Don&apos;t have an account?{" "}
+                        <Link to="/register"> Register </Link>
+                    </Typography>
+                </Paper>
+            </Container>
     );
 }

@@ -1,22 +1,26 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getEmployees, deleteEmployee } from "../../services/employeeService";
 import { useAuth } from "../auth/AuthContext";
 import { useEmployeeSearchParams } from "../../hooks/useEmployeeSearchParams";
 
+import { Container, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Stack, Box } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import Navbar from "../../components/Navbar";
 
 export default function EmployeeListPage() {
 
     const [employees, setEmployees] = useState([]);
     const [pagination, setPagination] = useState({});
     const { page, size, keyword, sort, setSearchParams } = useEmployeeSearchParams();
-
-    const { logout } = useAuth();
     const navigate = useNavigate();
 
     const loadEmployees = async () => {
-        const response = await getEmployees({ page: page, size: 5, direction: "asc"});
+        const response = await getEmployees({ page: page, direction: "asc"});
         setEmployees(response.data.content);
         setPagination(response.data.pagination);
     };
@@ -50,40 +54,58 @@ export default function EmployeeListPage() {
     useEffect(() => { loadEmployees() }, [page]);
 
     return (
-        <div>
-            <h2>Employees</h2>
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Department</th>
-                        <th>Salary</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {employees?.map((employee) => (
-                        <tr key={employee.id}>
-                            <td>{employee.id}</td>
-                            <td>{employee.firstName} {employee.lastName}</td>
-                            <td>{employee.email}</td>
-                            <td>{employee.department}</td>
-                            <td>{employee.salary}</td>
-                            <td>
-                                <button onClick={() => navigate(`/employees/edit/${employee.id}?page=${page}`)}>Edit</button>
-                                <button onClick={() => handleDelete(employee.id)}>Delete</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-            <button disabled={page === 0} onClick={() => handlePrevious()}> Previous </button>
-            <button disabled={page+1 >= pagination.totalPages} onClick = {() => handleNext()}> Next </button>
-
-            <button onClick={() => navigate("/employees/create")}>Add Employee</button>
-            <button onClick = { logout }>Logout</button>
-        </div>
+        <>
+            <Navbar />
+            <Container maxWidth="lg">
+                <Typography variant="h4" sx={{mt: 4, mb: 3 }}>
+                    Employee Management Page
+                </Typography>
+                <Button variant="contained" sx={{ mb: 2 }} onClick={() => navigate("/employees/create")}>Add Employee</Button>
+                <Paper elevation={3}>
+                    <TableContainer>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>ID</TableCell>
+                                    <TableCell>Name</TableCell>
+                                    <TableCell>Email</TableCell>
+                                    <TableCell>Department</TableCell>
+                                    <TableCell>Salary</TableCell>
+                                    <TableCell>Actions</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {employees?.map((employee) => (
+                                    <TableRow key={employee.id}>
+                                        <TableCell>{employee.id}</TableCell>
+                                        <TableCell>{employee.firstName} {employee.lastName}</TableCell>
+                                        <TableCell>{employee.email}</TableCell>
+                                        <TableCell>{employee.department}</TableCell>
+                                        <TableCell>{employee.salary}</TableCell>
+                                        <TableCell>
+                                            <Stack direction="row" spacing={1}>
+                                                <Button variant="contained" color="warning" startIcon={<EditIcon />} 
+                                                    onClick={() => navigate(`/employees/edit/${employee.id}?page=${page}`)}>Edit</Button>
+                                                <Button variant="contained" color="error" startIcon={<DeleteIcon />}
+                                                    onClick={() => handleDelete(employee.id)}>Delete</Button>
+                                            </Stack>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <Box sx={{ mt: 3, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <Stack direction="row" spacing={2}>
+                            <Button variant="contained" color="primary" startIcon={<NavigateBeforeIcon />}
+                                disabled={page === 0} onClick={() => handlePrevious()}> Prev </Button>
+                            {page + 1} of {pagination?.totalPages}
+                            <Button variant="contained" color="primary" startIcon={<NavigateNextIcon />}
+                                disabled={page+1 >= pagination.totalPages} onClick = {() => handleNext()}> Next </Button>
+                        </Stack>
+                    </Box>
+                </Paper>
+            </Container>
+        </>
     );
 }

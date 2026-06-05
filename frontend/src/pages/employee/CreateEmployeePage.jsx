@@ -1,7 +1,10 @@
 import { useForm, useFormContext } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { createEmployee, getEmployees } from "../../services/employeeService";
 import { useEmployeeSearchParams } from "../../hooks/useEmployeeSearchParams";
+import { Container, Paper, TextField, Button, Typography, Stack } from "@mui/material";
+import Navbar from "../../components/Navbar";
 
 export default function CreateEmployeePage() {
     const navigate = useNavigate();
@@ -35,10 +38,9 @@ export default function CreateEmployeePage() {
 
     const onSubmit = async (data) => {
         try {
-            const response = await createEmployee(data);
-            const createdEmployee = response.data;
+            await createEmployee(data);
+            toast.success("Employee created successfully");
             const targetPage = await getTargetPageAfterCreate();
-            alert("Employee created successfully");
             navigate(buildListUrl(targetPage));
         } catch (error) {
             alert(error.response?.data?.message || "Failed to create employee");
@@ -50,38 +52,29 @@ export default function CreateEmployeePage() {
     }
     
     return (
-        <div>
-            <h2>Create Employee</h2>
-            <form onSubmit={ handleSubmit(onSubmit) }>
-                <div>
-                    <input placeholder="First Name" {...register("firstName", {required: "First Name is required"})}
-                    />
-                    {errors.firstName && <p>{errors.firstName.message}</p>}
-                </div>
-                <div>
-                    <input placeholder="Last Name" {...register("lastName", {required: "Last Name is required"})}
-                    />
-                    {errors.lastName && <p>{errors.lastName.message}</p>}
-                </div>
-                <div>
-                    <input placeholder="Email" {...register("email", {required: "Email is required"})}
-                    />
-                    {errors.lastName && <p>{errors.lastName.message}</p>}
-                </div>
-                <div>
-                    <input placeholder="Department" {...register("department", {required: "Department is required"})}
-                    />
-                    {errors.department && <p>{errors.department.message}</p>}
-                </div>
-                <div>
-                    <input placeholder="Salary" {...register("salary", {required: "Salary is required"})}
-                    />
-                    {errors.salary && <p>{errors.salary.message}</p>}
-                </div>
-
-                <button type="submit">Create</button>
-                <button type="button" onClick={() => handleCancel()}>Cancel</button>
-            </form>
-        </div>
+        <>
+            <Navbar />
+            <Container maxWidth="sm">
+                <Paper elevation={3} sx={{p: 4, mt: 5}}>
+                    <Typography variant="h5" mb={3}>Create Employee</Typography><br/>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <Stack spacing={2}>
+                            <TextField label="First Name" {...register("firstName", {required: "First Name is required"})} />
+                            {errors.firstName && <p>{errors.firstName.message}</p>}
+                            <TextField label="Last Name" {...register("lastName", {required: "Last Name is required"})} />
+                            {errors.lastName && <p>{errors.lastName.message}</p>}
+                            <TextField placeholder="Email" {...register("email", {required: "Email is required"})} />
+                            {errors.lastName && <p>{errors.lastName.message}</p>}
+                            <TextField label="Department" {...register("department", {required: "Department is required"})}/>
+                            {errors.department && <p>{errors.department.message}</p>}
+                            <TextField label="Salary" {...register("salary", {required: "Salary is required"})} />
+                            {errors.salary && <p>{errors.salary.message}</p>}
+                            <Button variant="contained" color="primary"  type="submit">Create</Button>
+                            <Button variant="contained" color="warning"  type="button" onClick={() => handleCancel()}>Cancel</Button>
+                        </Stack>
+                    </form>
+                </Paper>
+            </Container>
+        </>
     );   
 }
