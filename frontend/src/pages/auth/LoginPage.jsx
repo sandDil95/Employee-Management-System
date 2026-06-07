@@ -29,7 +29,7 @@ export default function LoginPage() {
                     </Box><br/>
                     <Stack spacing={2}>
                         <TextField label="Email" fullWidth {...register("email", { required: "Email is required",})}/>
-                        <TextField label="Password" fullWidth {...register("password", { required: "Password is required",})}/>
+                        <TextField type="password" label="Password" fullWidth {...register("password", { required: "Password is required",})}/>
                         <Button type="submit" variant="contained" size="large" fullWidth startIcon={<LoginIcon />}
                         onClick={handleSubmit(onSubmit)}>Login</Button>
                     </Stack>
