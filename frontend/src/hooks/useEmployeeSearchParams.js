@@ -6,7 +6,9 @@ export const useEmployeeSearchParams = () => {
         page: Number(searchParams.get("page")) || 0,
         size: Number(searchParams.get("size")) || 9,
         keyword: searchParams.get("keyword") || "",
-        sort: searchParams.get("sort") || "id,asc",
+        department: searchParams.get("department") || "",
+        sort: searchParams.get("sortBy") || "id",
+        direction: searchParams.get("direction") || "asc",
         setSearchParams
     }
 };

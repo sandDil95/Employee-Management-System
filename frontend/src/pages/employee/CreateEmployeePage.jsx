@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { createEmployee, getEmployees } from "../../services/employeeService";
 import { useEmployeeSearchParams } from "../../hooks/useEmployeeSearchParams";
-import { Container, Paper, TextField, Button, Typography, Stack } from "@mui/material";
+import { Container, Paper, TextField, Button, Typography, Stack, MenuItem } from "@mui/material";
 import Navbar from "../../components/Navbar";
 
 export default function CreateEmployeePage() {
@@ -11,6 +11,9 @@ export default function CreateEmployeePage() {
     const { register, handleSubmit, formState: { errors }} = useForm();
 
     const { page, size, keyword, sort } = useEmployeeSearchParams();
+    const DEPARTMENTS = [
+        "IT", "HR", "FINANCE", "MARKETING", "OPERATIONS"
+    ];
 
     const buildListUrl = (page) => {
         const params = new URLSearchParams();
@@ -65,7 +68,14 @@ export default function CreateEmployeePage() {
                             {errors.lastName && <p>{errors.lastName.message}</p>}
                             <TextField placeholder="Email" {...register("email", {required: "Email is required"})} />
                             {errors.lastName && <p>{errors.lastName.message}</p>}
-                            <TextField label="Department" {...register("department", {required: "Department is required"})}/>
+                            <TextField select label="Department" {...register("department", {required: "Department is required"})}>
+                                <MenuItem value="">Select Department</MenuItem>
+                                { DEPARTMENTS.map((department) => (
+                                    <MenuItem key={department} value={department}>
+                                        { department }
+                                    </MenuItem>
+                                )) }
+                            </TextField>
                             {errors.department && <p>{errors.department.message}</p>}
                             <TextField label="Salary" {...register("salary", {required: "Salary is required"})} />
                             {errors.salary && <p>{errors.salary.message}</p>}

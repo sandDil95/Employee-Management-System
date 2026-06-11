@@ -5,7 +5,10 @@ import { getEmployees, deleteEmployee } from "../../services/employeeService";
 import { useEmployeeSearchParams } from "../../hooks/useEmployeeSearchParams";
 
 import CircularProgress from "@mui/material/CircularProgress";
-import { Container, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Stack, Box, Chip, Divider, TextField } from "@mui/material";
+import { Container, Typography, Paper, Table, TableBody, TableCell, 
+         TableContainer, TableHead, TableRow, Button, Stack, Box, 
+         Chip, Divider, TextField, Select, MenuItem, InputLabel, FormControl 
+       } from "@mui/material";
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -15,12 +18,13 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear"
 import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
 
 export default function EmployeeListPage() {
 
     const [employees, setEmployees] = useState([]);
     const [pagination, setPagination] = useState({});
-    const { page, size, keyword, sort, setSearchParams } = useEmployeeSearchParams();
+    const { page, size, keyword, department, sort, direction, setSearchParams } = useEmployeeSearchParams();
     const [searchKeyword, setSearchKeyword] = useState(keyword);
 
     const [ deleteDialogOpen, setDeleteDialogOpen ] = useState(false);
@@ -32,7 +36,7 @@ export default function EmployeeListPage() {
     const loadEmployees = async () => {
         try {
         setLoading(true);
-        const response = await getEmployees({ page: page, keyword: searchKeyword, direction: "asc"});
+        const response = await getEmployees({ page: page, keyword: searchKeyword, sortBy: sort, direction: direction});
         setEmployees(response.data.content);
         setPagination(response.data.pagination);
         } catch( error ) {
@@ -49,7 +53,7 @@ export default function EmployeeListPage() {
 
     const handleClearSearch = () => {
         setSearchKeyword("");
-        setSearchParams({ page: 0, size, keyword: "", sort});
+        setSearchParams({ page: 0, size, keyword: searchKeyword, sort});
         loadEmployees();
     };
 
@@ -76,18 +80,26 @@ export default function EmployeeListPage() {
         }
     };
 
+    const handleSortByChange = (event) => {
+        setSearchParams({ page, size, keyword: searchKeyword, sortBy: event.target.value, direction, });
+    }
+
+    const handleDirectionChange = (event) => {
+        setSearchParams({ page, size, keyword: searchKeyword, sortBy: sort, direction: event.target.value });
+    }
+
     const handleNext = () => {
         const nextPage = page + 1;
-        setSearchParams({ page: nextPage, size, keyword: searchKeyword });
+        setSearchParams({ page: nextPage, size, keyword: searchKeyword,  sortBy: sort, direction });
     };
 
     const handlePrevious = () => {
         const prevPage = page - 1;
-        setSearchParams({ page: prevPage, size, keyword: searchKeyword });
+        setSearchParams({ page: prevPage, size, keyword: searchKeyword,  sortBy: sort, direction });
     }
 
     useEffect(() => { setSearchKeyword(searchKeyword)}, [searchKeyword]);
-    useEffect(() => { loadEmployees() }, [page]);
+    useEffect(() => { loadEmployees() }, [page, size, searchKeyword, sort, direction]);
 
     return (
         <>
@@ -105,6 +117,22 @@ export default function EmployeeListPage() {
                                 onChange= {(e) => setSearchKeyword(e.target.value)}/>
                             <Button variant="contained" startIcon={<SearchIcon />} onClick={handleSearch} sx={{ minWidth: 130 }}> Search </Button>
                             <Button variant="outlined" startIcon={<ClearIcon />} onClick={handleClearSearch} sx={{ minWidth: 110 }}>Clear</Button>
+                            <FormControl size="small" sx={{ minWidth: 160 }}>
+                                <InputLabel>Sort By</InputLabel>
+                                <Select label="Sort By" value={sort} onChange={handleSortByChange}>
+                                    <MenuItem value="id">ID</MenuItem>
+                                    <MenuItem value="email">Email</MenuItem>
+                                    <MenuItem value="department">Department</MenuItem>
+                                    <MenuItem value="salary">Salary</MenuItem>
+                                </Select>
+                            </FormControl>
+                            <FormControl size="small" sx={{ minWidth: 150 }}>
+                                <InputLabel>Direction</InputLabel>
+                                <Select label="Direction" value={direction} onChange={handleDirectionChange}>
+                                    <MenuItem value="asc">Ascending</MenuItem>
+                                    <MenuItem value="desc">Descending</MenuItem>
+                                </Select>
+                            </FormControl>
                         </Stack>
                     </Box>
                     <Divider />
@@ -168,14 +196,14 @@ export default function EmployeeListPage() {
                     <Box sx={{ mt: 3, display: "flex", justifyContent: "space-between"}}>
                         <Stack direction="row" spacing={2}>
                             <Button variant="contained" color="primary" startIcon={<NavigateBeforeIcon />}
-                                disabled={page === 0} onClick={() => handlePrevious()}> Prev </Button>
+                                disabled={loading || page === 0} onClick={() => handlePrevious()}> Prev </Button>
                             {page + 1} of {pagination?.totalPages}
                             <Button variant="contained" color="primary" startIcon={<NavigateNextIcon />}
-                                disabled={page+1 >= pagination.totalPages} onClick = {() => handleNext()}> Next </Button>
+                                disabled={loading || page+1 >= pagination.totalPages} onClick = {() => handleNext()}> Next </Button>
                         </Stack>
                     </Box>
                 </Paper>
-            </Container>
+            </Container><br/><br/>
             <Dialog open={ deleteDialogOpen } onClose={handleCloseDeleteDialog}>
                 <DialogTitle>Delete Employee</DialogTitle>
                 <DialogContent>
@@ -186,6 +214,7 @@ export default function EmployeeListPage() {
                     <Button onClick={handleConfirmDelete} color="error" variant="contained">Delete</Button>
                 </DialogActions>
             </Dialog>
+            <Footer />
         </>
     );
 }

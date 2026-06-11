@@ -1,10 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getEmployeeById, updateEmployee } from "../../services/employeeService";
 import { useEmployeeSearchParams } from "../../hooks/useEmployeeSearchParams";
-import { Container, Paper, TextField, Button, Typography, Stack } from "@mui/material";
+import { Container, Paper, TextField, Button, Typography, Stack, MenuItem } from "@mui/material";
 import Navbar from "../../components/Navbar";
 
 export default function EditEmployeepage() {
@@ -13,6 +13,10 @@ export default function EditEmployeepage() {
 
     const { register, handleSubmit, reset, formState: {errors},} = useForm();
     const { page, size, keyword, sort } = useEmployeeSearchParams();
+    const DEPARTMENTS = [
+        "IT", "HR", "FINANCE", "MARKETING", "OPERATIONS"
+    ];
+    const [departmentQuery, setDepartmentQuery] = useState("");
 
     const backToListUrl = `/employees?page=${page}&size=${size}&keyword=${keyword}`;
     
@@ -21,6 +25,7 @@ export default function EditEmployeepage() {
     const loadEmployee = async () => {
         try {
         const response = await getEmployeeById(id);
+        setDepartmentQuery(response.data.department || "");
         reset ({ firstName: response.data.firstName,
             lastName: response.data.lastName,
             email: response.data.email,
@@ -40,7 +45,7 @@ export default function EditEmployeepage() {
         } catch(error) {
             const response = error.response?.data;
             if (response?.errors) {
-                Object.values(response.errors).forEach((msg) => toast,error(msg));
+                Object.values(response.errors).forEach((msg) => toast.error(msg));
             } else {
                 toast.error(response?.message || "Failed to update employee");
             }
@@ -60,8 +65,15 @@ export default function EditEmployeepage() {
                             <TextField placeholder="Last Name" {...register("lastName", {required: "Last Name is required"})} />
                             {errors.lastName && <p>{errors.lastName.message}</p>}
                             <TextField placeholder="Email" {...register("email", {required: "Email is required"})} />
-                            {errors.lastName && <p>{errors.lastName.message}</p>}
-                            <TextField placeholder="Department" {...register("department", {required: "Department is required"})}/>
+                            {errors.email && <p>{errors.email.message}</p>}
+                            <TextField select value={departmentQuery} placeholder="Department" {...register("department", {required: "Department is required"})}>
+                                <MenuItem value="">Select Department</MenuItem>
+                                { DEPARTMENTS.map((department) => (
+                                    <MenuItem key={department} value={department}>
+                                        { department }
+                                    </MenuItem>
+                                )) }
+                            </TextField>
                             {errors.department && <p>{errors.department.message}</p>}
                             <TextField placeholder="Salary" {...register("salary", {required: "Salary is required"})} />
                             {errors.salary && <p>{errors.salary.message}</p>}
