@@ -5,7 +5,6 @@ import {useNavigate, Link} from "react-router-dom";
 import LoginIcon from "@mui/icons-material/Login";
 import { Box, Button, Container, Paper, TextField, Typography, Stack } from "@mui/material";
 
-
 export default function LoginPage() {
     const navigate = useNavigate();
     const {login} = useAuth();
@@ -30,6 +29,9 @@ export default function LoginPage() {
                     <Stack spacing={2}>
                         <TextField label="Email" fullWidth {...register("email", { required: "Email is required",})}/>
                         <TextField type="password" label="Password" fullWidth {...register("password", { required: "Password is required",})}/>
+                        <Typography variant="body2" sx={{ textAlign: "right", mt: -1 }}>
+                            <Link to="/forgot-password">Forgot password?</Link>
+                        </Typography>
                         <Button type="submit" variant="contained" size="large" fullWidth startIcon={<LoginIcon />}
                         onClick={handleSubmit(onSubmit)}>Login</Button>
                     </Stack>

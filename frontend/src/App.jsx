@@ -5,6 +5,7 @@ import EmployeeListPage from "./pages/employee/EmployeeListPage";
 import ProtectedRoute from "./pages/auth/ProtectedRoute";
 import CreateEmployeePage from "./pages/employee/CreateEmployeePage"; 
 import EditEmployeepage  from "./pages/employee/EditEmployeePage";
+import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
 
 function App() {
     return (
@@ -12,6 +13,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<Navigate to="/login" replace />} />
                 <Route path = "/login" element={ <LoginPage/> } />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path = "/register" element={ <Registerpage/> } />
                 <Route path = "/employees" 
                   element = { <ProtectedRoute><EmployeeListPage/></ProtectedRoute>} />
